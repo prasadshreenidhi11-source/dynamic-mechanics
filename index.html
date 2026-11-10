@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" class="loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APEX Hypercars | Unleash the Beast</title>
+<meta name="description" content="APEX hypercar hero with scroll-scrubbed video.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="loader" id="loader" role="status" aria-live="polite">
+  <div class="ld-logo">APEX</div>
+  <div class="ld-count"><b id="ldCount">0</b><span>%</span></div>
+  <div class="ld-bar"><i id="ldBar"></i></div>
+  <p class="ld-note" id="ldNote">Loading the showroom</p>
+  <div class="ld-actions" id="ldActions" hidden>
+    <button type="button" class="ld-enter" id="enter">Enter with sound</button>
+    <button type="button" class="ld-quiet" id="enterQuiet" data-nosound>Without sound</button>
+  </div>
+</div>
+
+<div class="paint" id="paint" role="group" aria-label="Car colour">
+  <span class="paint-title">Colour</span>
+  <div class="paint-swatches" id="paintSwatches"></div>
+  <span class="paint-name" id="paintName" aria-live="polite">Sun Yellow</span>
+</div>
+
+<aside class="rail" id="rail" aria-label="Page progress">
+  <div class="rail-line"><i class="rail-fill" id="railFill"></i><i class="rail-dot" id="railDot"></i></div>
+  <ul class="rail-list" id="railList"></ul>
+  <span class="rail-pct" id="railPct">0%</span>
+</aside>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top" aria-label="APEX home">
+    <svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><path d="M20 3 36 12v16L20 37 4 28V12z" fill="none" style="stroke:var(--gold)" stroke-width="2"/><path d="M12 26 20 10l8 16h-5l-3-6-3 6z" style="fill:var(--gold)"/></svg>
+    <span>APEX</span>
+  </a>
+  <nav class="links" aria-label="Primary">
+    <a href="#models">Models</a>
+    <a href="#performance">Performance</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="right">
+    <button class="sound" id="sound" type="button" aria-pressed="true" aria-label="Sound on. Click to mute">
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="sound-label" id="soundLabel">Sound on</span>
+    </button>
+    <a class="cta" href="#contact">Configure</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" id="hero">
+    <div class="stage">
+      <canvas id="frames" aria-label="Hypercar opening its doors as you scroll" role="img"></canvas>
+      <img class="engine" id="engine" src="assets/engine.jpg" alt="" aria-hidden="true">
+      <div class="vignette"></div>
+
+      <div class="copy c1" id="c1">
+        <p class="eyebrow">The 2027 Apex V12</p>
+        <h1>Unleash <br>the beast</h1>
+      </div>
+      <div class="copy c2" id="c2">
+        <p class="eyebrow">Act two</p>
+        <h2>Doors up. <br>Pulse up.</h2>
+      </div>
+      <div class="copy c3" id="c3">
+        <p class="eyebrow">Engineering excellence</p>
+        <h2>Every part <br>earns its place.</h2>
+      </div>
+
+      <div class="meter" aria-hidden="true"><i id="bar"></i><b id="pct">0%</b></div>
+      <div class="hint" id="hint">Scroll</div>
+    </div>
+  </section>
+
+  <section class="seg" id="models">
+    <header class="seg-head reveal">
+      <p class="eyebrow">01 / Models</p>
+      <h2>Three ways<br>to arrive</h2>
+    </header>
+    <div class="cards">
+      <article class="card reveal"><img src="assets/model-closed.jpg" alt="Apex V12 coupe, doors closed" loading="lazy"><div><h3>V12 Coupe</h3><p>Sealed, silent, ready to launch.</p></div></article>
+      <article class="card reveal"><img src="assets/model-opening.jpg" alt="Apex V12 opening its doors" loading="lazy"><div><h3>V12 Dynamic</h3><p>Doors rise. The room goes quiet.</p></div></article>
+      <article class="card reveal"><img src="assets/model-open.jpg" alt="Apex V12 fully open" loading="lazy"><div><h3>V12 Atelier</h3><p>Engine bay open, built your way.</p></div></article>
+    </div>
+  </section>
+
+  <section class="seg stats" id="performance">
+    <header class="seg-head reveal">
+      <p class="eyebrow">02 / Performance</p>
+      <h2>Unmatched<br>performance</h2>
+      <p class="lead">Every component engineered to perfection. Every detail crafted for dominance.</p>
+    </header>
+    <ul class="numbers">
+      <li class="reveal"><b data-count="1015" data-suffix=" hp">0</b><span>Combined output</span></li>
+      <li class="reveal"><b data-count="2.4" data-dec="1" data-suffix=" s">0</b><span>0 to 100 km/h</span></li>
+      <li class="reveal"><b data-count="350" data-suffix=" km/h">0</b><span>Top speed</span></li>
+      <li class="reveal"><b data-count="12" data-suffix=" cyl">0</b><span>Naturally aspirated V12</span></li>
+    </ul>
+  </section>
+
+  <section class="seg experience" id="experience">
+    <div class="exp-bg" id="expBg" style="background-image:url(assets/engine.jpg)"></div>
+    <div class="exp-veil"></div>
+    <header class="seg-head reveal">
+      <p class="eyebrow">03 / Experience</p>
+      <h2>Feel every<br>part work</h2>
+      <p class="lead">Hand-assembled in 600 hours. One engineer signs every engine.</p>
+      <a class="cta" href="#contact">Book a private viewing</a>
+    </header>
+  </section>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="foot-cta reveal">
+    <p class="eyebrow">04 / Contact</p>
+    <h2>Reserve yours</h2>
+    <form class="enquiry" onsubmit="event.preventDefault();this.querySelector('button').textContent='Request noted';">
+      <input type="text" name="name" placeholder="Your name" required aria-label="Your name">
+      <input type="email" name="email" placeholder="Email" required aria-label="Email">
+      <button class="cta" type="submit">Send enquiry</button>
+    </form>
+  </div>
+  <div class="foot-grid">
+    <div>
+      <a class="logo" href="#top"><span>APEX</span></a>
+      <p class="muted">Hand-built hypercars. Limited to 250 a year.</p>
+    </div>
+    <div>
+      <h3>Explore</h3>
+      <a href="#models">Models</a><a href="#performance">Performance</a><a href="#experience">Experience</a>
+    </div>
+    <div>
+      <h3>Contact</h3>
+      <a href="mailto:hello@example.com">hello@example.com</a><a href="tel:+000000000">+00 000 000 000</a>
+    </div>
+  </div>
+  <p class="legal">&copy; 2026 APEX Hypercars. Concept design, not a real brand.</p>
+</footer>
+
+<script src="app.js"></script>
+<script src="sections.js"></script>
+<script src="audio.js"></script>
+<script src="loader.js"></script>
+<script src="colors.js"></script>
+</body>
+</html>

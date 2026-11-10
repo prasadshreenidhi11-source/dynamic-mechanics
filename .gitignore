@@ -1,0 +1,6 @@
+# scratch + superseded frame sets (site uses frames_hd3/)
+ref/
+frames/
+frames_hd/
+frames_hd2/
+*.log
