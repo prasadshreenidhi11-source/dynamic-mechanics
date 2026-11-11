@@ -79,7 +79,6 @@ html.entered .rail{opacity:1}
 #frames,.engine{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .engine{opacity:0;transform:scale(1.06);will-change:opacity,transform}
 .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,transparent 40%,#000d 100%),linear-gradient(#0008,transparent 25%,transparent 70%,#000a)}
-.stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:url(assets/grain.png);opacity:.07;z-index:2}
 .copy{position:absolute;left:0;right:0;top:clamp(84px,13vh,140px);padding:0 20px;text-align:center;opacity:0;transform:translateY(24px);will-change:opacity,transform}
 .copy h1 br,.copy h2 br{display:none}
 @media (max-width:760px){.copy h1 br,.copy h2 br{display:inline}}
@@ -670,7 +669,6 @@ html.entered .paint.away{opacity:0;transform:translateY(10px);pointer-events:non
 
 /* clean look: no extra overlays or shadows over the car */
 .vignette,.spin-vig,.stage .glow{display:none}
-.stage::after{display:none}
 .tcard{box-shadow:none}
 
 /* premium hero pass */

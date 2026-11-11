@@ -15,7 +15,7 @@
   const OPEN_AT = 0.9;                       // scroll progress where the car is fully open and rotation unlocks
   const A = makeSet(190, i => `frames_hd3/f_${pad(i, 4)}.webp`, 24);        // closed -> open
   const B = makeSet(380, i => `frames_360_ll/t_${pad(i, 4)}.webp`, 30);     // open car, full turn
-  window.FRAME_COUNT = A.N + B.N; window.ready = 0;                          // the loader reads these
+  window.FRAME_COUNT = A.N; window.ready = 0;                                // the loader waits only for the opening frames
 
   let loaded = 0, started = false;
   let pos = 0, vel = 0, dragging = false, lastX = 0, visible = false, target = null, mode = 'scrub';
@@ -55,7 +55,7 @@
       while (next < jobs.length) {
         const [s, i] = jobs[next++];
         try { s.blobs[i] = await (await fetch(s.url(i))).blob(); } catch (e) {}
-        loaded++; window.ready = loaded; bar.style.width = (loaded / jobs.length * 100) + '%';
+        loaded++; window.ready = Math.min(loaded, A.N); bar.style.width = (loaded / jobs.length * 100) + '%';
         if (loaded === jobs.length) loadEl.classList.add('done');
       }
     };

@@ -23,6 +23,7 @@ function countUp(el) {
 // parallax on the experience background
 const expBg = document.getElementById('expBg'), expSec = document.getElementById('experience');
 function parallax() {
+  if (!expBg || !expSec) return;
   const r = expSec.getBoundingClientRect();
   if (r.bottom < 0 || r.top > innerHeight) return;
   const k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;

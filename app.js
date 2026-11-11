@@ -220,13 +220,18 @@ class RevealCanvas {
   }
 
   preloadFrames() {
-    for (let i = 1; i <= this.totalFrames; i++) {
-      const img = new Image();
-      const frameNum = String(i).padStart(4, '0');
-      img.src = `reveal_frames/f_${frameNum}.webp`;
-      img.onload = () => this.imagesLoaded++;
-      this.frames.push(img);
-    }
+    const run = () => {
+      for (let i = 1; i <= this.totalFrames; i++) {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = `reveal_frames/f_${String(i).padStart(4, '0')}.webp`;
+        img.onload = () => this.imagesLoaded++;
+        this.frames.push(img);
+      }
+    };
+    if (!this.revealSection || !('IntersectionObserver' in window)) return run();
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); run(); } }, { rootMargin: '2500px 0px' });
+    io.observe(this.revealSection);                 // fetch these only when the section is close
   }
 
   bindScroll() {
