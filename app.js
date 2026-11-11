@@ -1,78 +1,294 @@
-// Scroll-scrubbed hero: scroll position -> video frame (drawn on canvas).
-const FRAME_COUNT = 190;               // frames extracted from video/hero.mp4 at 24fps
-const frameSrc = i => `frames_hd3/f_${String(i).padStart(4, '0')}.webp`;
+/**
+ * APEX - Hero Frame Scrubbing Canvas Engine
+ */
 
-const hero = document.getElementById('hero');
-const canvas = document.getElementById('frames');
-const ctx = canvas.getContext('2d');
-const engine = document.getElementById('engine');
-const bar = document.getElementById('bar');
-const pct = document.getElementById('pct');
-const hint = document.getElementById('hint');
-const copy = [1, 2, 3].map(n => document.getElementById('c' + n));
+window.FRAME_COUNT = 190;
+window.ready = 0;
 
-const images = new Array(FRAME_COUNT);
-let current = -1, target = 0, smooth = 0, ready = 0;
+class HeroCanvas {
+  constructor() {
+    this.canvas = document.getElementById('frames') || document.getElementById('hero-canvas');
+    if (!this.canvas) {
+      console.warn('Canvas element not found in DOM.');
+      return;
+    }
+    
+    this.ctx = this.canvas.getContext('2d');
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = 'high';
+    this.totalFrames = window.FRAME_COUNT;
+    this.frames = [];
+    this.imagesLoaded = 0;
+    this.currentFrameIndex = 0;
+    this.targetFrameIndex = 0;
 
-const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const ease = t => t * t * (3 - 2 * t);
-// window helper: 0 before a, 1 on b..c, 0 after d
-const win = (p, a, b, c, d) => ease(clamp((p - a) / (b - a))) * (1 - ease(clamp((p - c) / (d - c))));
+    this.heroContainer = document.querySelector('.hero');
+    this.engineOverlay = document.querySelector('.engine');
 
-function resize() {
-  const dpr = Math.min(devicePixelRatio || 1, 2);
-  canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr;
-  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-  current = -1; draw(Math.round(smooth * (FRAME_COUNT - 1)));
-}
+    this.textBlocks = {
+      intro: document.getElementById('hero-text-1'),
+      aero: document.getElementById('hero-text-2'),
+      engine: document.getElementById('hero-text-3')
+    };
 
-function draw(i) {
-  const img = images[i];
-  if (!img || !img.complete || i === current) return;
-  current = i;
-  const cw = canvas.width, ch = canvas.height;
-  const s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
-  const w = img.naturalWidth * s, h = img.naturalHeight * s;
-  ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
-}
+    this.init();
+  }
 
-function load() {
-  // first frame first, then the rest
-  for (let i = 0; i < FRAME_COUNT; i++) {
-    const im = new Image();
-    im.decoding = 'async';
-    im.onload = () => { ready++; if (i === 0) draw(0); };
-    im.src = frameSrc(i + 1);
-    images[i] = im;
+  init() {
+    this.resizeCanvas();
+    window.addEventListener('resize', () => this.resizeCanvas());
+    this.preloadFrames();
+    this.bindScroll();
+    this.renderLoop();
+  }
+
+  resizeCanvas() {
+    if (!this.canvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.canvas.width = Math.round(window.innerWidth * dpr);
+    this.canvas.height = Math.round(window.innerHeight * dpr);
+  }
+
+  preloadFrames() {
+    return; // frames now come from spin.js (360 view); keep only the scroll text logic here
+    for (let i = 1; i <= this.totalFrames; i++) {
+      const img = new Image();
+      const frameNum = String(i).padStart(4, '0');
+      img.src = `frames_hd3/f_${frameNum}.webp`;
+      
+      img.onload = () => {
+        this.imagesLoaded++;
+        window.ready = this.imagesLoaded;
+      };
+      
+      this.frames.push(img);
+    }
+  }
+
+  bindScroll() {
+    window.addEventListener('scroll', () => {
+      if (!this.heroContainer) return;
+
+      const rect = this.heroContainer.getBoundingClientRect();
+      const totalScrollable = this.heroContainer.offsetHeight - window.innerHeight;
+      const currentScroll = Math.max(0, -rect.top);
+
+      let progress = Math.min(1, Math.max(0, currentScroll / totalScrollable));
+
+      const frameProgress = progress;
+      this.targetFrameIndex = Math.min(
+        this.totalFrames - 1,
+        Math.floor(frameProgress * (this.totalFrames - 1))
+      );
+
+      if (this.engineOverlay) {
+        this.engineOverlay.style.opacity = 0;
+        this.engineOverlay.style.display = 'none';
+      }
+
+      this.updateTextVisibility(progress);
+    });
+  }
+
+  updateTextVisibility(progress) {
+    if (this.textBlocks.intro) {
+      this.textBlocks.intro.classList.toggle('active', progress >= 0.02 && progress < 0.35);
+    }
+    if (this.textBlocks.aero) {
+      this.textBlocks.aero.classList.toggle('active', progress >= 0.40 && progress < 0.70);
+    }
+    if (this.textBlocks.engine) {
+      this.textBlocks.engine.classList.toggle('active', progress >= 0.75 && progress <= 1.0);
+    }
+  }
+
+  renderLoop() {
+    this.currentFrameIndex += (this.targetFrameIndex - this.currentFrameIndex) * 0.15;
+    const frameToDraw = Math.round(this.currentFrameIndex);
+
+    const img = this.frames[frameToDraw];
+    if (img && img.complete && img.naturalWidth !== 0) {
+      this.drawFrame(img);
+    }
+
+    requestAnimationFrame(() => this.renderLoop());
+  }
+
+  drawFrame(img) {
+    if (!this.ctx || !this.canvas) return;
+    const cw = this.canvas.width;
+    const ch = this.canvas.height;
+
+    this.ctx.fillStyle = '#060606';
+    this.ctx.fillRect(0, 0, cw, ch);
+
+    const hRatio = cw / img.width;
+    const vRatio = ch / img.height;
+    const ratio = Math.max(hRatio, vRatio); // cover: fill the screen, no visible frame edges
+
+    const dw = img.width * ratio;
+    const dh = img.height * ratio;
+    const dx = (cw - dw) / 2;
+    const dy = (ch - dh) * 0.25; // crop mostly from the floor, keep doors in frame
+
+    if (window.apexColorEngine && typeof window.apexColorEngine.drawWithWipe === 'function') {
+      window.apexColorEngine.drawWithWipe(this.ctx, img, dx, dy, dw, dh);
+    } else {
+      this.ctx.drawImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
+    }
   }
 }
 
-function onScroll() {
-  const r = hero.getBoundingClientRect();
-  target = clamp(-r.top / (r.height - innerHeight));
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    window.apexHeroCanvas = new HeroCanvas();
+  });
+} else {
+  window.apexHeroCanvas = new HeroCanvas();
 }
 
-function tick() {
-  smooth += (target - smooth) * 0.12;            // eased follow, no snapping
-  if (Math.abs(target - smooth) < 0.0004) smooth = target;
-  const p = smooth;
+// APEX - Models Section Video Scroll Scrubber
+(() => {
+  const modelsSection = document.getElementById('models');
+  const modelsVideo = document.getElementById('modelsVideo');
+  const modelsContent = document.getElementById('modelsContent');
 
-  // video plays across the first 82% of scroll, engine takes the rest
-  draw(Math.round(clamp(p / 0.82) * (FRAME_COUNT - 1)));
+  if (!modelsSection || !modelsVideo) return;
 
-  const e = ease(clamp((p - 0.74) / 0.2));
-  engine.style.opacity = e;
-  engine.style.transform = `scale(${1.06 - 0.06 * e})`;
+  modelsVideo.pause();
+  modelsVideo.currentTime = 0;
 
-  const o = [win(p, -1, 0, 0.14, 0.26), win(p, 0.3, 0.42, 0.6, 0.72), win(p, 0.8, 0.9, 1.1, 1.2)];
-  copy.forEach((el, k) => { el.style.opacity = o[k]; el.style.transform = `translateY(${(1 - o[k]) * 24}px)`; });
+  function updateModelsScroll() {
+    const rect = modelsSection.getBoundingClientRect();
+    const sectionHeight = modelsSection.offsetHeight - window.innerHeight;
+    const currentScroll = Math.max(0, -rect.top);
+    
+    let progress = Math.min(1, Math.max(0, currentScroll / sectionHeight));
 
-  bar.style.setProperty('--p', (p * 100).toFixed(1) + '%');
-  pct.textContent = Math.round(p * 100) + '%';
-  hint.style.opacity = p > 0.03 ? 0 : 1;
-  requestAnimationFrame(tick);
+    if (!isNaN(modelsVideo.duration) && modelsVideo.duration > 0) {
+      modelsVideo.currentTime = progress * modelsVideo.duration;
+    }
+
+    if (modelsContent) {
+      if (progress > 0.05 && progress < 0.85) {
+        modelsContent.classList.add('active');
+      } else {
+        modelsContent.classList.remove('active');
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateModelsScroll);
+  window.addEventListener('resize', updateModelsScroll);
+})();
+
+// APEX - Smooth Multi-Stage Car Reveal Canvas Frame Engine
+class RevealCanvas {
+  constructor() {
+    this.canvas = document.getElementById('revealCanvas');
+    if (!this.canvas) return;
+
+    this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+    this.totalFrames = 150; // Set this to your exact total exported frame count
+    this.frames = [];
+    this.imagesLoaded = 0;
+    
+    this.currentFrame = 0;
+    this.targetFrame = 0;
+    this.ease = 0.12; // LERP smoothness factor
+
+    this.revealSection = document.getElementById('reveal');
+    this.c1 = document.getElementById('revealCopy1');
+    this.c2 = document.getElementById('revealCopy2');
+    this.c3 = document.getElementById('revealCopy3');
+
+    this.init();
+  }
+
+  init() {
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+    this.preloadFrames();
+    this.bindScroll();
+    this.renderLoop();
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  }
+
+  preloadFrames() {
+    for (let i = 1; i <= this.totalFrames; i++) {
+      const img = new Image();
+      const frameNum = String(i).padStart(4, '0');
+      img.src = `reveal_frames/f_${frameNum}.webp`;
+      img.onload = () => this.imagesLoaded++;
+      this.frames.push(img);
+    }
+  }
+
+  bindScroll() {
+    window.addEventListener('scroll', () => {
+      if (!this.revealSection) return;
+
+      const rect = this.revealSection.getBoundingClientRect();
+      const sectionHeight = this.revealSection.offsetHeight - window.innerHeight;
+      const currentScroll = Math.max(0, -rect.top);
+
+      let progress = Math.min(1, Math.max(0, currentScroll / sectionHeight));
+
+      this.targetFrame = Math.min(
+        this.totalFrames - 1,
+        Math.floor(progress * (this.totalFrames - 1))
+      );
+
+      // Toggle text blocks smoothly based on scroll progress
+      if (this.c1) this.c1.classList.toggle('active', progress >= 0.05 && progress < 0.33);
+      if (this.c2) this.c2.classList.toggle('active', progress >= 0.36 && progress < 0.66);
+      if (this.c3) this.c3.classList.toggle('active', progress >= 0.69 && progress < 0.95);
+    }, { passive: true });
+  }
+
+  renderLoop() {
+    // Smooth LERP transition between frame indexes
+    this.currentFrame += (this.targetFrame - this.currentFrame) * this.ease;
+    const frameToDraw = Math.round(this.currentFrame);
+
+    const img = this.frames[frameToDraw];
+    if (img && img.complete && img.naturalWidth !== 0) {
+      this.drawFrame(img);
+    }
+
+    requestAnimationFrame(() => this.renderLoop());
+  }
+
+  drawFrame(img) {
+    if (!this.ctx || !this.canvas) return;
+    const cw = this.canvas.width;
+    const ch = this.canvas.height;
+
+    this.ctx.fillStyle = '#050505';
+    this.ctx.fillRect(0, 0, cw, ch);
+
+    const hRatio = cw / img.width;
+    const vRatio = ch / img.height;
+    const ratio = Math.max(hRatio, vRatio); // Cover fit
+
+    const dw = img.width * ratio;
+    const dh = img.height * ratio;
+    const dx = (cw - dw) / 2;
+    const dy = (ch - dh) / 2;
+
+    this.ctx.drawImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
+  }
 }
 
-addEventListener('scroll', onScroll, { passive: true });
-addEventListener('resize', resize);
-resize(); load(); onScroll(); requestAnimationFrame(tick);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    window.apexRevealCanvas = new RevealCanvas();
+  });
+} else {
+  window.apexRevealCanvas = new RevealCanvas();
+}

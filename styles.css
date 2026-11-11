@@ -140,7 +140,8 @@ h2{font-size:clamp(30px,4.6vw,68px)}
 @media (max-width:760px){
   .links{display:none}
   .sound-label{display:none}
-  .paint-swatches{gap:8px;max-width:200px}.swatch{width:20px;height:20px}.paint-title{display:none}
+  .paint-swatches{gap:8px}
+  .swatch{width:20px;height:20px}
   .rail{width:24px;height:46vh}.rail-list span,.rail-pct{display:none}
   .foot-grid{grid-template-columns:1fr;gap:28px}
   .meter{display:none}
@@ -149,3 +150,608 @@ h2{font-size:clamp(30px,4.6vw,68px)}
   .exp-veil{background:#050505cc}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hint::after{animation:none}.reveal{opacity:1;transform:none;transition:none}}
+
+/* ==========================================================================
+   APEX Additions: Left Vertical Configurator & Miniature Car Rail Tracker
+   ========================================================================== */
+.paint {
+  left: clamp(20px, 3vw, 44px) !important;
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  opacity: 0.35;
+  transition: opacity 0.4s ease, transform 1s ease .7s;
+}
+.paint:hover {
+  opacity: 1;
+}
+.paint-swatches {
+  flex-direction: column !important;
+  max-width: none !important;
+  gap: 12px !important;
+}
+.swatch-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.swatch-label {
+  position: absolute;
+  left: calc(100% + 15px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px);
+  background: rgba(12, 12, 14, 0.95);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font: 500 10px Orbitron, sans-serif;
+  letter-spacing: .1em;
+  color: #fff;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, transform .3s cubic-bezier(.16,1,.3,1), visibility .3s;
+}
+.swatch-wrapper:hover .swatch-label,
+.swatch[aria-pressed="true"] + .swatch-label {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+.rail-dot {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.mini-car {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+}
+.mini-car::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 0px;
+  background: var(--gold);
+  border-radius: 50%;
+  transition: height 0.2s ease, background 0.2s ease;
+}
+.mini-car.moving-down::after {
+  height: 6px;
+  background: #ff5500;
+  box-shadow: 0 0 6px #ff5500;
+}
+.mini-car.moving-up::after {
+  height: 4px;
+  background: #ff3b3b;
+  box-shadow: 0 0 6px #ff3b3b;
+}
+/* --- Enhanced Miniature Car in Right Rail --- */
+.rail-dot {
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.mini-car {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  pointer-events: none;
+  width: 16px;
+  height: 12px;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+  z-index: 10;
+}
+
+.mini-car svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Exhaust flame / brake light effect on scroll */
+.mini-car::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 50%;
+  transition: height 0.2s ease, background 0.2s ease;
+}
+
+.mini-car.moving-down::after {
+  height: 8px;
+  background: #ff5500;
+  box-shadow: 0 0 8px #ff5500, 0 0 12px #ff3300;
+}
+
+.mini-car.moving-up::after {
+  height: 6px;
+  background: #ff3b3b;
+  box-shadow: 0 0 8px #ff3b3b;
+}
+/* --- Preloader Driving Car Animation --- */
+/* --- Preloader Driving Car Fix --- */
+.ld-bar {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.loader-driving-car {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+  z-index: 20;
+}
+
+.loader-driving-car::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 20px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+/* --- Preloader Driving Car Styles --- */
+.ld-bar {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.loader-driving-car {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+  z-index: 20;
+}
+
+.loader-driving-car::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+/* --- APEX Overlapping Models Video Section --- */
+#models {
+  position: relative;
+  height: 350vh; /* Creates scroll length for scrubbing the video */
+  padding: 0;
+  border-top: none;
+  background: var(--bg);
+  z-index: 5;
+}
+
+.models-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.models-video-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.models-video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.models-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 40%, #000d 100%), linear-gradient(#0008, transparent 30%, transparent 70%, #000a);
+}
+
+.models-content {
+  position: absolute;
+  left: 5vw;
+  bottom: 8vh;
+  z-index: 2;
+  text-align: left;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.models-content h2 {
+  font: 900 clamp(24px, 3.5vw, 54px)/1.1 Orbitron, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--ink);
+  margin-top: 8px;
+}
+.models-content.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.models-content h2 {
+  font: 900 clamp(32px, 5vw, 72px)/1 Orbitron, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--ink);
+  margin-top: 10px;
+}
+
+/* Ensure subsequent sections cleanly overlap models */
+#performance {
+  position: relative;
+  z-index: 10;
+  background: var(--bg);
+  box-shadow: 0 -20px 40px rgba(0,0,0,0.8);
+}
+/* --- APEX Car Reveal Section --- */
+#reveal {
+  position: relative;
+  height: 350vh;
+  padding: 0;
+  border-top: none;
+  background: var(--bg);
+  z-index: 6;
+}
+
+.reveal-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.reveal-video-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.reveal-video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reveal-overlay-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.reveal-copy {
+  position: absolute;
+  left: 5vw;
+  top: 15vh; /* Moves it up near the top-left area where it's fully visible against the dark concrete wall */
+  bottom: auto;
+  max-width: 500px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(.2,.7,.2,1), transform 0.6s cubic-bezier(.2,.7,.2,1);
+}
+
+.reveal-copy.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-copy h2 {
+  font: 900 clamp(24px, 3.5vw, 54px)/1.1 Orbitron, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--ink);
+  margin-top: 8px;
+}
+
+.reveal-copy .sub {
+  margin-top: 12px;
+  color: var(--muted);
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: .04em;
+}
+
+/* Ensure footer overlaps reveal section cleanly */
+#contact {
+  position: relative;
+  z-index: 10;
+  background: #030303;
+}
+
+/* --- Enhanced Specs 50/50 Split Section (Taller & Blurred Transition) --- */
+.specs-split {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
+  align-items: center;
+  min-height: 110vh; /* Taller, immersive section height */
+  padding: clamp(100px, 14vh, 160px) clamp(24px, 6vw, 90px);
+  background: #050505; /* Matches global theme */
+  border-top: none;
+}
+
+/* Smooth blurred gradient transition at the top edge */
+.specs-split::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0) 100%);
+  pointer-events: none;
+  z-index: 2;
+  backdrop-filter: blur(8px);
+}
+
+.specs-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 3;
+}
+
+.specs-left h2 {
+  font: 900 clamp(32px, 4.5vw, 62px)/1.1 Orbitron, sans-serif;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-top: 10px;
+}
+
+.specs-left .lead {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 50ch;
+  margin-top: 20px;
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+.spec-item b {
+  display: block;
+  font: 900 clamp(24px, 2.8vw, 40px)/1 Orbitron, sans-serif;
+  color: var(--gold);
+  letter-spacing: .02em;
+}
+
+.spec-item span {
+  display: block;
+  margin-top: 8px;
+  font: 500 11px Orbitron, sans-serif;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.specs-right {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 520px; /* Taller video frame container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.specs-video-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+}
+
+.specs-video-frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.specs-video-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(5,5,5,0.7) 100%), linear-gradient(180deg, rgba(5,5,5,0.1) 0%, rgba(5,5,5,0.5) 100%);
+}
+
+@media (max-width: 900px) {
+  .specs-split {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    min-height: auto;
+  }
+  .specs-right, .specs-video-frame {
+    min-height: 360px;
+  }
+}
+html.entered .paint.away{opacity:0;transform:translateY(10px);pointer-events:none;transition-delay:0s}
+
+/* hero technical callouts */
+.stage .glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 45% 38% at 58% 52%,color-mix(in srgb,var(--gold) 20%,transparent),transparent 70%);mix-blend-mode:screen;opacity:.55}
+.techlayer{position:absolute;left:50%;top:50%;width:min(100vw,177.78vh);height:min(56.25vw,100vh);transform:translate(-50%,-50%);pointer-events:none;z-index:3}
+.tech-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tech-lines line{stroke:var(--gold);stroke-width:1;stroke-dasharray:1;stroke-dashoffset:1;opacity:.85;transition:stroke-dashoffset 1s cubic-bezier(.2,.7,.2,1) .15s;filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 4px var(--gold))}
+.tech-lines line.on{stroke-dashoffset:0}
+.tech{position:absolute;inset:0}
+.tdot{position:absolute;left:var(--x);top:var(--y);width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #000a,0 0 0 5px color-mix(in srgb,var(--gold) 60%,transparent),0 0 16px var(--gold);opacity:0;transform:scale(.4);transition:opacity .5s,transform .5s cubic-bezier(.2,.7,.2,1)}
+.tech.on .tdot{opacity:1;transform:none}
+.tcard{position:absolute;left:var(--cx);top:var(--cy);width:clamp(170px,19%,260px);padding:14px 16px;border-radius:14px;color:var(--ink);background:linear-gradient(135deg,#ffffff1f,#ffffff08);border:1px solid color-mix(in srgb,var(--gold) 38%,transparent);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);box-shadow:0 10px 40px #0009,inset 0 1px 0 #ffffff2a;opacity:0;transform:translateY(14px);transition:opacity .8s ease .3s,transform .8s cubic-bezier(.2,.7,.2,1) .3s}
+.tech.on .tcard{opacity:1;transform:none;animation:tfloat 7s ease-in-out 1.2s infinite}
+.tech:nth-child(3) .tcard{animation-delay:2s}
+.tech:nth-child(4) .tcard{animation-delay:3s}
+@keyframes tfloat{0%,100%{translate:0 0}50%{translate:0 -6px}}
+.tk{display:block;font:500 9px Orbitron,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.tcard h3{font:700 clamp(12px,1.05vw,15px)/1.2 Orbitron,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.tcard p{font:300 clamp(11px,.85vw,13px)/1.45 Inter,sans-serif;color:var(--muted)}
+.v10{display:block;width:100%;height:46px;margin:2px 0 8px}
+.v10 rect{fill:url(#vg);opacity:.9}
+.v10 .bank{animation:vpulse 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.v10 .r{animation-delay:1.2s}
+@keyframes vpulse{0%,100%{opacity:.75}50%{opacity:1}}
+@media (max-width:760px){.techlayer,.stage .glow{display:none}}
+@media (prefers-reduced-motion:reduce){.tech.on .tcard,.v10 .bank{animation:none}}
+
+/* 360 spin */
+.spin{position:relative;height:100vh;background:#000}
+.spin-stage{position:relative;height:100%;overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none}
+.spin-stage.grab{cursor:grabbing}
+#spinCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.spin-vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,transparent 45%,#000d 100%),linear-gradient(#0009,transparent 22%,transparent 78%,#000b)}
+.spin-head{position:absolute;left:clamp(20px,5vw,80px);top:clamp(80px,12vh,130px);pointer-events:none;z-index:3}
+.spinlayer{pointer-events:none}
+.stech{position:absolute;inset:0}
+.stech.on .tdot{opacity:1;transform:none}
+.stech.on .tcard{opacity:1;transform:none;animation:tfloat 7s ease-in-out 1.2s infinite}
+.spin-hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);font:500 10px Orbitron,sans-serif;letter-spacing:.4em;text-transform:uppercase;color:var(--muted);transition:opacity .5s;z-index:3;pointer-events:none}
+.spin-hint.gone{opacity:0}
+.spin-load{position:absolute;left:0;right:0;bottom:0;height:2px;background:#ffffff14;transition:opacity .6s .3s}
+.spin-load i{display:block;height:100%;width:0;background:var(--gold)}
+.spin-load.done{opacity:0}
+@media (max-width:760px){.spinlayer{display:none}}
+
+.wmask{position:absolute;right:0;bottom:0;width:15%;height:22%;pointer-events:none;background:radial-gradient(ellipse at 70% 70%,#070707 0,#070707e6 40%,transparent 78%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);-webkit-mask-image:radial-gradient(ellipse at 70% 70%,#000 45%,transparent 80%);mask-image:radial-gradient(ellipse at 70% 70%,#000 45%,transparent 80%)}
+@media (max-width:760px){.wmask{display:block}}
+
+/* clean look: no extra overlays or shadows over the car */
+.vignette,.spin-vig,.stage .glow{display:none}
+.stage::after{display:none}
+.tcard{box-shadow:none}
+
+/* premium hero pass */
+#techlayer{width:max(100vw,177.78vh);height:max(56.25vw,100vh)}
+#spinCanvas{-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.swatch-label{display:none}
+.paint{opacity:.55}
+.paint-title{letter-spacing:.4em;font-size:8px}
+.paint-name{font-size:9px;letter-spacing:.28em;color:var(--muted)}
+.swatch{width:16px;height:16px;box-shadow:inset 0 0 0 1px #ffffff40}
+.swatch::after{inset:-4px}
+.tcard{border-color:color-mix(in srgb,var(--gold) 30%,transparent);background:linear-gradient(135deg,#ffffff14,#ffffff05)}
+.tk{letter-spacing:.36em}
+.tech-lines line{stroke-width:.8}
+.hint{letter-spacing:.5em}
+
+#techlayer{top:calc((100vh - max(56.25vw,100vh)) * .25);transform:translateX(-50%)}
+
+/* no added shine: keep the video exactly as Flow made it */
+.tech-lines line{filter:none}
+.tdot{box-shadow:0 0 0 2px #000a}
+.tech:nth-child(n) .tcard,.stech .tcard{backdrop-filter:blur(10px)}
+
+/* 360 hero */
+#spinCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;-webkit-mask-image:none;mask-image:none}
+.stage{cursor:grab;touch-action:pan-y;user-select:none}
+.stage.grab{cursor:grabbing}
+.stage .copy{pointer-events:none}
+#spinLayer{width:max(100vw,177.78vh);height:max(56.25vw,100vh);top:calc((100vh - max(56.25vw,100vh)) * .25);transform:translateX(-50%)}
+.hint{pointer-events:none}
+
+/* hero features */
+.specs{position:absolute;left:clamp(20px,3vw,44px);bottom:34px;display:flex;gap:clamp(18px,2.4vw,40px);z-index:4;pointer-events:none}
+.specs div{display:grid;grid-template-columns:auto auto;align-items:baseline;column-gap:5px}
+.specs b{font:700 clamp(18px,1.7vw,26px)/1 Orbitron,sans-serif;color:var(--ink);font-variant-numeric:tabular-nums;min-width:2ch}
+.specs i{font:500 9px Orbitron,sans-serif;letter-spacing:.2em;color:var(--gold);font-style:normal;text-transform:uppercase}
+.specs span{grid-column:1/-1;margin-top:6px;font:500 8px Orbitron,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.presets{position:absolute;left:50%;bottom:66px;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border-radius:999px;z-index:4;background:#ffffff0d;border:1px solid #ffffff1f;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.presets button{all:unset;cursor:pointer;padding:8px 18px;border-radius:999px;font:500 10px Orbitron,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);transition:color .3s,background .3s}
+.presets button:hover{color:var(--ink)}
+.presets button.on{background:var(--gold);color:#000}
+.presets button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.cfg{position:absolute;right:clamp(60px,6vw,96px);bottom:34px;z-index:4;display:grid;grid-template-columns:auto auto;gap:2px 16px;align-items:center;padding:10px 14px 10px 16px;border-radius:12px;text-decoration:none;background:#ffffff0d;border:1px solid #ffffff1f;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .3s}
+.cfg:hover{border-color:var(--gold)}
+.cfg span{font:700 11px Orbitron,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.cfg em{grid-column:1;font:300 11px Inter,sans-serif;font-style:normal;color:var(--muted)}
+.cfg b{grid-row:1/3;grid-column:2;font:700 9px Orbitron,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#000;background:var(--gold);padding:9px 12px;border-radius:8px}
+.enquiry input[readonly]{color:var(--muted);cursor:default}
+.hint{bottom:12px}
+@media (max-width:760px){.specs{display:none}.presets{bottom:56px}.cfg{right:14px;bottom:100px}}
+
+/* models: camera glides between four cars, same glass style as the hero */
+#models{height:400vh}
+.models-sticky{background:#000}
+.mbox{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform;transition:transform 1.7s cubic-bezier(.65,0,.35,1)}
+.mbox video{display:block;width:100%;height:100%;object-fit:fill}
+.mcards{position:absolute;left:clamp(20px,5vw,80px);top:clamp(90px,15vh,150px);width:clamp(220px,22vw,320px);height:150px;z-index:3;pointer-events:none}
+.mcard{position:absolute;inset:0 0 auto 0;padding:16px 20px 18px;border-radius:14px;background:linear-gradient(135deg,#ffffff14,#ffffff05);border:1px solid color-mix(in srgb,var(--gold) 30%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transform:translateY(14px);transition:opacity .8s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
+.mcard.on{opacity:1;transform:none;transition-delay:.5s}
+.mcard h3{font:700 clamp(18px,1.7vw,26px)/1.15 Orbitron,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:2px 0 8px}
+.mcard p{font:300 clamp(12px,.95vw,15px)/1.4 Inter,sans-serif;color:var(--muted)}
+.mcard i{display:block;width:30px;height:2px;margin-top:12px;background:var(--gold)}
+.mtitle{position:absolute;left:clamp(20px,5vw,80px);bottom:clamp(28px,6vh,60px);z-index:3;pointer-events:none}
+.mtitle h2{font-size:clamp(26px,3.6vw,56px);margin-top:6px}
+.mrail{position:absolute;right:clamp(60px,6vw,96px);top:50%;transform:translateY(-50%);z-index:4;display:flex;flex-direction:column;gap:4px;padding:4px;border-radius:999px;background:#ffffff0d;border:1px solid #ffffff1f;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.mrail button{all:unset;cursor:pointer;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;font:500 11px Orbitron,sans-serif;letter-spacing:.12em;color:var(--muted);transition:color .3s,background .3s}
+.mrail button:hover{color:var(--ink)}
+.mrail button.on{background:var(--gold);color:#000}
+.mrail button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#performance{box-shadow:none}
+@media (prefers-reduced-motion:reduce){.mbox,.mcard{transition:none}}
+@media (max-width:760px){.mrail{right:12px}.mcards{top:84px}}
+.mcards{left:auto;right:clamp(130px,12vw,220px);top:auto;bottom:clamp(40px,9vh,90px)}
+.mrail{right:clamp(110px,8vw,150px)}
+.mcards{right:auto;left:clamp(20px,5vw,80px);top:auto;bottom:calc(clamp(28px,6vh,60px) + clamp(120px,22vh,180px));height:120px}
+.mcard{background:linear-gradient(135deg,#0b0b0dcc,#0b0b0d99)}
+
+/* models: one wide frame, the camera moves to each car with the scroll */
+#models{height:500vh}
+.mbox{transition:none;will-change:transform}
+.mbox img{display:block;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-drag:none}
+.mcard{transition:opacity .45s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.mcard.on{transition:opacity .9s ease .35s,transform 1s cubic-bezier(.2,.7,.2,1) .35s}
+.mrail button.on{background:var(--gold);color:#000}

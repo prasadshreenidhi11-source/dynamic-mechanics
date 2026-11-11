@@ -42,8 +42,7 @@
   </a>
   <nav class="links" aria-label="Primary">
     <a href="#models">Models</a>
-    <a href="#performance">Performance</a>
-    <a href="#experience">Experience</a>
+    <a href="#reveal">Reveal</a>
     <a href="#contact">Contact</a>
   </nav>
   <div class="right">
@@ -58,9 +57,46 @@
 <main id="top">
   <section class="hero" id="hero">
     <div class="stage">
-      <canvas id="frames" aria-label="Hypercar opening its doors as you scroll" role="img"></canvas>
-      <img class="engine" id="engine" src="assets/engine.jpg" alt="" aria-hidden="true">
-      <div class="vignette"></div>
+      <canvas id="frames" aria-hidden="true" style="display:none"></canvas>
+      <canvas id="spinCanvas" aria-label="Opened hypercar. Scroll or drag to rotate 360 degrees" role="img"></canvas>
+      <div class="techlayer" id="techlayer">
+        <svg class="tech-lines" id="techLines" aria-hidden="true"></svg>
+        <div class="tech" data-at="53,57" data-at2="1" data-th="0.10" style="--x:52.6%;--y:57.4%;--cx:15%;--cy:72%">
+          <i class="tdot"></i>
+          <aside class="tcard"><b class="tk">Wheels</b><h3>Forged Alloy Rims</h3><p>21 in front, 22 in rear. Forged aluminium, centre-lock, 9 kg each.</p></aside>
+        </div>
+        <div class="tech" data-th="0.36" style="--x:69.5%;--y:47%;--cx:75%;--cy:66%">
+          <i class="tdot"></i>
+          <aside class="tcard"><b class="tk">Structure</b><h3>Carbon Fibre Body</h3><p>Autoclave-cured monocoque and panels. 1,380 kg dry weight.</p></aside>
+        </div>
+        <div class="tech" data-th="0.60" style="--x:74%;--y:40%;--cx:77%;--cy:17%">
+          <i class="tdot"></i>
+          <aside class="tcard tengine">
+            <b class="tk">Powertrain</b><h3>V10 Engine</h3>
+            <svg class="v10" viewBox="0 0 120 64" aria-hidden="true">
+              <defs><linearGradient id="vg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs>
+              <g class="bank l"><rect x="14" y="30" width="9" height="26" rx="2"/><rect x="26" y="26" width="9" height="26" rx="2"/><rect x="38" y="22" width="9" height="26" rx="2"/><rect x="50" y="18" width="9" height="26" rx="2"/><rect x="62" y="14" width="9" height="26" rx="2"/></g>
+              <g class="bank r"><rect x="49" y="30" width="9" height="26" rx="2"/><rect x="61" y="26" width="9" height="26" rx="2"/><rect x="73" y="22" width="9" height="26" rx="2"/><rect x="85" y="18" width="9" height="26" rx="2"/><rect x="97" y="14" width="9" height="26" rx="2"/></g>
+            </svg>
+            <p>5.2 L naturally aspirated. 640 hp at 8,500 rpm.</p>
+          </aside>
+        </div>
+      </div>
+
+      <div class="techlayer spinlayer" id="spinLayer">
+        <svg class="tech-lines" id="spinLines" aria-hidden="true"></svg>
+        <i class="wmask"></i>
+        <div class="stech" data-from="70" data-to="125" style="--x:70%;--y:57%;--cx:72%;--cy:70%">
+          <i class="tdot"></i><aside class="tcard"><b class="tk">Wheels</b><h3>Forged Alloy Rims</h3><p>21 in front, 22 in rear. Forged aluminium, centre-lock.</p></aside>
+        </div>
+        <div class="stech" data-from="78" data-to="125" style="--x:46%;--y:50%;--cx:14%;--cy:16%">
+          <i class="tdot"></i><aside class="tcard tengine"><b class="tk">Powertrain</b><h3>V10 Engine</h3><p>5.2 L naturally aspirated. 640 hp at 8,500 rpm.</p></aside>
+        </div>
+        <div class="stech" data-from="84" data-to="125" style="--x:56%;--y:36%;--cx:70%;--cy:15%">
+          <i class="tdot"></i><aside class="tcard"><b class="tk">Structure</b><h3>Carbon Fibre Body</h3><p>Autoclave-cured monocoque and panels. 1,380 kg dry.</p></aside>
+        </div>
+      </div>
+      <div class="spin-load" id="spinLoad"><i id="spinLoadBar"></i></div>
 
       <div class="copy c1" id="c1">
         <p class="eyebrow">The 2027 Apex V12</p>
@@ -75,56 +111,121 @@
         <h2>Every part <br>earns its place.</h2>
       </div>
 
+      <div class="specs" id="heroSpecs" aria-label="Key figures">
+        <div><b data-to="2.9" data-dec="1">0</b><i>s</i><span>0-100 km/h</span></div>
+        <div><b data-to="330">0</b><i>km/h</i><span>Top speed</span></div>
+        <div><b data-to="640">0</b><i>hp</i><span>Power</span></div>
+      </div>
+      <div class="presets" id="presets" role="group" aria-label="Camera angle">
+        <button type="button" data-f="0">3/4</button>
+        <button type="button" data-f="100">Side</button>
+        <button type="button" data-f="190">Rear</button>
+        <button type="button" data-f="335">Front</button>
+      </div>
+      <a class="cfg" id="cfg" href="#contact"><span id="cfgText">Sun Yellow</span><em>from $480,000</em><b>Configure</b></a>
+
       <div class="meter" aria-hidden="true"><i id="bar"></i><b id="pct">0%</b></div>
-      <div class="hint" id="hint">Scroll</div>
+      <div class="hint" id="hint">Scroll or drag</div>
     </div>
   </section>
 
-  <section class="seg" id="models">
-    <header class="seg-head reveal">
-      <p class="eyebrow">01 / Models</p>
-      <h2>Three ways<br>to arrive</h2>
-    </header>
-    <div class="cards">
-      <article class="card reveal"><img src="assets/model-closed.jpg" alt="Apex V12 coupe, doors closed" loading="lazy"><div><h3>V12 Coupe</h3><p>Sealed, silent, ready to launch.</p></div></article>
-      <article class="card reveal"><img src="assets/model-opening.jpg" alt="Apex V12 opening its doors" loading="lazy"><div><h3>V12 Dynamic</h3><p>Doors rise. The room goes quiet.</p></div></article>
-      <article class="card reveal"><img src="assets/model-open.jpg" alt="Apex V12 fully open" loading="lazy"><div><h3>V12 Atelier</h3><p>Engine bay open, built your way.</p></div></article>
+  <section class="seg" id="models" aria-label="Models">
+    <div class="models-sticky" id="modelsStage">
+      <div class="mbox" id="mBox"><img id="mImg" src="images/showroom-4cars.jpg" alt="Four hypercars in a dark showroom: red, orange, blue and black" decoding="async"></div>
+
+      <div class="mcards" id="mCards">
+        <aside class="mcard on"><b class="tk">The Legend</b><h3>Zenith X1</h3><p>Pure. Refined.</p><i></i></aside>
+        <aside class="mcard"><b class="tk">The Evolution</b><h3>Vectra S</h3><p>Speed. Redefined.</p><i></i></aside>
+        <aside class="mcard"><b class="tk">The Future</b><h3>Orion GT</h3><p>Drive the future. Today.</p><i></i></aside>
+        <aside class="mcard"><b class="tk">Next Gen</b><h3>Raven</h3><p>Power, unleashed.</p><i></i></aside>
+      </div>
+
+      <div class="mtitle"><p class="eyebrow">01 / Models</p><h2>Four ways<br>to arrive</h2></div>
+
+      <nav class="mrail" id="mRail" aria-label="Choose a model">
+        <button type="button" data-i="0" class="on">01</button>
+        <button type="button" data-i="1">02</button>
+        <button type="button" data-i="2">03</button>
+        <button type="button" data-i="3">04</button>
+      </nav>
+    </div>
+  </section>
+  <!-- SPECS & CRAFTSMANSHIP (LEFT CONTENT / RIGHT BUGATTI VIDEO) -->
+  <section class="seg specs-split" id="specs">
+    <div class="specs-left">
+      <header class="seg-head">
+        <p class="eyebrow">02 / Engineering</p>
+        <h2>Sculpted for Dominance</h2>
+        <p class="lead">Every curve dictates airflow. Every intake serves a purpose. Engineered to shatter limits without compromise.</p>
+      </header>
+      
+      <div class="specs-grid">
+        <div class="spec-item">
+          <b>1,015 HP</b>
+          <span>Quad-Turbo V16</span>
+        </div>
+        <div class="spec-item">
+          <b>2.4s</b>
+          <span>0–100 km/h</span>
+        </div>
+        <div class="spec-item">
+          <b>445 km/h</b>
+          <span>Top Speed</span>
+        </div>
+        <div class="spec-item">
+          <b>Full Carbon</b>
+          <span>Monocoque Chassis</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="specs-right">
+      <div class="specs-video-frame">
+        <video src="videos/bugatti.mp4" autoplay loop muted playsinline preload="auto"></video>
+        <div class="specs-video-overlay"></div>
+      </div>
     </div>
   </section>
 
-  <section class="seg stats" id="performance">
-    <header class="seg-head reveal">
-      <p class="eyebrow">02 / Performance</p>
-      <h2>Unmatched<br>performance</h2>
-      <p class="lead">Every component engineered to perfection. Every detail crafted for dominance.</p>
-    </header>
-    <ul class="numbers">
-      <li class="reveal"><b data-count="1015" data-suffix=" hp">0</b><span>Combined output</span></li>
-      <li class="reveal"><b data-count="2.4" data-dec="1" data-suffix=" s">0</b><span>0 to 100 km/h</span></li>
-      <li class="reveal"><b data-count="350" data-suffix=" km/h">0</b><span>Top speed</span></li>
-      <li class="reveal"><b data-count="12" data-suffix=" cyl">0</b><span>Naturally aspirated V12</span></li>
-    </ul>
-  </section>
-
-  <section class="seg experience" id="experience">
-    <div class="exp-bg" id="expBg" style="background-image:url(assets/engine.jpg)"></div>
-    <div class="exp-veil"></div>
-    <header class="seg-head reveal">
-      <p class="eyebrow">03 / Experience</p>
-      <h2>Feel every<br>part work</h2>
-      <p class="lead">Hand-assembled in 600 hours. One engineer signs every engine.</p>
-      <a class="cta" href="#contact">Book a private viewing</a>
-    </header>
+  <!-- REVEAL SECTION (CANVAS FRAME SCRUBBING) -->
+  <section class="seg" id="reveal">
+    <div class="reveal-sticky">
+      <div class="reveal-video-container">
+        <canvas id="revealCanvas" aria-label="Hypercar reveal sequence"></canvas>
+        <div class="models-vignette"></div>
+      </div>
+      <div class="reveal-overlay-stage">
+        <!-- Stage 1 Content: Covered -->
+        <div class="reveal-copy" id="revealCopy1">
+          <p class="eyebrow">02 / The Unveiling</p>
+          <h2>Shrouded in Mystery</h2>
+          <p class="sub">Precision engineering, waiting beneath the surface.</p>
+        </div>
+        <!-- Stage 2 Content: Uncloaked -->
+        <div class="reveal-copy" id="revealCopy2">
+          <p class="eyebrow">02 / Pure Perfection</p>
+          <h2>Pure Aerodynamics</h2>
+          <p class="sub">Scattered light meets carbon fiber in raw harmony.</p>
+        </div>
+        <!-- Stage 3 Content: Disassembled -->
+        <div class="reveal-copy" id="revealCopy3">
+          <p class="eyebrow">02 / Deconstructed</p>
+          <h2>Deconstructed Power</h2>
+          <p class="sub">Every component forged for extreme performance.</p>
+        </div>
+      </div>
+    </div>
   </section>
 </main>
 
 <footer class="foot" id="contact">
   <div class="foot-cta reveal">
-    <p class="eyebrow">04 / Contact</p>
+    <p class="eyebrow">03 / Contact</p>
     <h2>Reserve yours</h2>
     <form class="enquiry" onsubmit="event.preventDefault();this.querySelector('button').textContent='Request noted';">
       <input type="text" name="name" placeholder="Your name" required aria-label="Your name">
       <input type="email" name="email" placeholder="Email" required aria-label="Email">
+      <input type="text" name="colour" id="enqColour" readonly placeholder="Colour" aria-label="Chosen colour">
       <button class="cta" type="submit">Send enquiry</button>
     </form>
   </div>
@@ -135,7 +236,7 @@
     </div>
     <div>
       <h3>Explore</h3>
-      <a href="#models">Models</a><a href="#performance">Performance</a><a href="#experience">Experience</a>
+      <a href="#models">Models</a><a href="#reveal">Reveal</a>
     </div>
     <div>
       <h3>Contact</h3>
@@ -149,6 +250,11 @@
 <script src="sections.js"></script>
 <script src="audio.js"></script>
 <script src="loader.js"></script>
+<script src="smooth.js"></script>
 <script src="colors.js"></script>
+<script src="tech.js"></script>
+<script src="spin.js"></script>
+<script src="hero-features.js"></script>
+<script src="models.js"></script>
 </body>
 </html>

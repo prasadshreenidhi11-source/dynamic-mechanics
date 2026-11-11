@@ -6,7 +6,7 @@
   let wanted = true;                                   // default ON
   try { if (localStorage.getItem('apex-sound') === 'off') wanted = false; } catch (e) {}
 
-  let ac, master, filt, droneGain, whooshGain, whooshFilt, started = false;
+  let ac, master, filt, droneGain, whooshGain, whooshFilt, revOsc, revFilt, revGain, started = false;
 
   function build() {
     ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -33,6 +33,11 @@
     whooshFilt = ac.createBiquadFilter(); whooshFilt.type = 'bandpass'; whooshFilt.frequency.value = 500; whooshFilt.Q.value = 0.8;
     whooshGain = ac.createGain(); whooshGain.gain.value = 0;
     n.connect(whooshFilt); whooshFilt.connect(whooshGain); whooshGain.connect(master); n.start();
+    // engine rev: rises with how fast the car is being turned
+    revOsc = ac.createOscillator(); revOsc.type = 'sawtooth'; revOsc.frequency.value = 52;
+    revFilt = ac.createBiquadFilter(); revFilt.type = 'lowpass'; revFilt.frequency.value = 300; revFilt.Q.value = 3;
+    revGain = ac.createGain(); revGain.gain.value = 0;
+    revOsc.connect(revFilt); revFilt.connect(revGain); revGain.connect(master); revOsc.start();
     started = true;
   }
 
@@ -52,6 +57,10 @@
       const door = Math.sin(clamp((p - 0.25) / 0.45) * Math.PI);
       whooshGain.gain.setTargetAtTime(clamp(vel / 60) * 0.18 * (0.35 + door), t, 0.12);
       whooshFilt.frequency.setTargetAtTime(350 + door * 1400, t, 0.2);
+      const sp = Math.min(1, ((window.apexSpin && window.apexSpin.speed) || 0) / 4);   // frames per tick
+      revOsc.frequency.setTargetAtTime(52 + sp * 70, t, 0.15);
+      revFilt.frequency.setTargetAtTime(300 + sp * 900, t, 0.15);
+      revGain.gain.setTargetAtTime(sp * 0.22, t, 0.2);
       lastP = p;
     }
     requestAnimationFrame(update);
