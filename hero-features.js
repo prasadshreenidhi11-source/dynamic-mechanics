@@ -7,8 +7,26 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // 1. angle presets
-  const presets = [...document.querySelectorAll('#presets button')];
-  presets.forEach(b => b.addEventListener('click', () => window.apexSpin && window.apexSpin.goTo(+b.dataset.f)));
+ const presets = [...document.querySelectorAll('#presets button')];
+
+// Initially select 3/4
+let activePreset = presets[0];
+
+presets.forEach(button => {
+  button.classList.toggle('on', button === activePreset);
+
+  button.addEventListener('click', () => {
+    activePreset = button;
+
+    presets.forEach(item => {
+      item.classList.toggle('on', item === activePreset);
+    });
+
+    if (window.apexSpin) {
+      window.apexSpin.goTo(Number(button.dataset.f));
+    }
+  });
+});
 
   // 4. live spec counters follow scroll
   const nums = [...document.querySelectorAll('#heroSpecs b')];
@@ -44,13 +62,32 @@
       const v = (+n.dataset.to) * k, d = +n.dataset.dec || 0;
       n.textContent = d ? v.toFixed(d) : Math.round(v);
     });
-    if (window.apexSpin) {
-      const f = window.apexSpin.frame(), N = window.apexSpin.N;
-      presets.forEach(b => {
-        let d = Math.abs(f - +b.dataset.f); d = Math.min(d, N - d);
-        b.classList.toggle('on', d < 22);
-      });
+  if (window.apexSpin) {
+  const f = window.apexSpin.frame();
+  const N = window.apexSpin.N;
+
+  let closestButton = null;
+  let closestDistance = Infinity;
+
+  presets.forEach(button => {
+    const presetFrame = ((Number(button.dataset.f) % N) + N) % N;
+
+    let distance = Math.abs(f - presetFrame);
+    distance = Math.min(distance, N - distance);
+
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestButton = button;
     }
+  });
+
+  presets.forEach(button => {
+    button.classList.toggle(
+      'on',
+      button === closestButton && closestDistance < 15
+    );
+  });
+}
     cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06;
     const px = Math.round(cx * -5), py = Math.round(cy * -3);   // whole pixels, no scaling: the picture is never resampled
     window.apexTilt = { x: px, y: py };

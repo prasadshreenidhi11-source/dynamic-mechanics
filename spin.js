@@ -12,11 +12,10 @@
   const ctx = cv.getContext('2d');
   const pad = (i, n) => String(i + 1).padStart(n, '0');
 
-  const OPEN_AT = 0.9;                       // scroll progress where the car is fully open and rotation unlocks
-  const A = makeSet(190, i => `frames_hd3/f_${pad(i, 4)}.webp`, 24);        // closed -> open
-  const B = makeSet(380, i => `frames_360_ll/t_${pad(i, 4)}.webp`, 30);     // open car, full turn
-  window.FRAME_COUNT = A.N; window.ready = 0;                                // the loader waits only for the opening frames
-
+  const OPEN_AT = 0.22;                      // scroll progress where the car is fully open and 360 rotation begins
+  const A = makeSet(72, i => `frames_lambo_open/frame-${pad(i, 4)}.webp`, 24);
+  const B = makeSet(240, i => `frames_lambo_360/frame-${pad(i, 4)}.webp`, 30);
+  window.FRAME_COUNT = A.N; window.ready = 0;
   let loaded = 0, started = false;
   let pos = 0, vel = 0, dragging = false, lastX = 0, visible = false, target = null, mode = 'scrub';
 
@@ -106,31 +105,52 @@
   const wrapB = v => ((v % B.N) + B.N) % B.N;
   const distToPose = () => { const f = wrapB(pos); return Math.min(f, B.N - f); };
 
-  const api = window.apexSpin = {
-    N: B.N, speed: 0,
-    frame() { return wrapB(pos); },
-    staticOk() { return mode === 'scrub' || distToPose() < 8; },   // the closed-to-open labels fit only the starting pose
-    goTo(f) {
-      if (progress() < OPEN_AT) {                                  // open the car first, then turn
-        scrollTo({ top: sec.offsetTop + (OPEN_AT + 0.02) * (sec.offsetHeight - innerHeight), behavior: 'smooth' });
-        setTimeout(() => { target = f; vel = 0; }, 1100);
-      } else { target = f; vel = 0; }
-    },
-  };
-  let lastPos = 0;
+ 
+const api = window.apexSpin = {
+  N: B.N,
+  speed: 0,
+
+  frame() {
+    return wrapB(pos);
+  },
+
+  staticOk() {
+    return mode === 'scrub' || distToPose() < 8;
+  },
+
+  goTo(f) {
+    const destination = wrapB(Number(f));
+    if (!Number.isFinite(destination)) return;
+
+    const scrollTarget = sec.offsetTop + (OPEN_AT + 0.01) * (sec.offsetHeight - innerHeight) + (destination / B.N) * (1 - OPEN_AT) * (sec.offsetHeight - innerHeight);
+    scrollTo({
+      top: scrollTarget,
+      behavior: 'smooth'
+    });
+    target = destination;
+    vel = 0;
+  }
+};
+
+let lastPos = 0;
 
   function render() {
     const p = progress();
     mode = p >= OPEN_AT ? 'rotate' : 'scrub';
     let img;
     if (mode === 'scrub') {
-      pos = 0; vel = 0; target = null;                              // coming back up re-closes the car at the starting pose
+      target = null;
+      pos = (p / OPEN_AT) * B.N;
       const i = Math.min(A.N - 1, Math.round(p / OPEN_AT * (A.N - 1)));
       A.decode(i);
-      if (p > 0.6) B.decode(0);                                     // have the rotation frames ready before the car is open
+      if (p > 0.1) B.decode(0);
       img = A.get(i) || A.nearest(i);
     } else {
-      const i = Math.round(wrapB(pos)) % B.N;
+      if (!dragging && target === null) {
+        const scrollFrac = Math.min(1, Math.max(0, (p - OPEN_AT) / (1 - OPEN_AT)));
+        pos = scrollFrac * (B.N - 1);
+      }
+      const i = Math.min(B.N - 1, Math.max(0, Math.round(wrapB(pos))));
       B.decode(i);
       img = B.get(i) || B.nearest(i);
     }
@@ -165,12 +185,18 @@
 
   function tick() {
     if (visible) {
-      if (mode === 'rotate' && !dragging) {
+      if (mode === 'rotate') {
         if (target !== null) {
           const diff = (((target - pos + B.N / 2) % B.N) + B.N) % B.N - B.N / 2;
-          if (Math.abs(diff) < 0.3) target = null; else pos += diff * 0.07;
+          if (Math.abs(diff) < 0.3) {
+            pos = target;
+            target = null;
+          } else {
+            pos += diff * 0.12;
+          }
+        } else if (dragging) {
+          vel *= 0.94;
         }
-        vel *= 0.94; pos += vel;                                    // inertia only, no auto-rotate
       }
       render();
     }
