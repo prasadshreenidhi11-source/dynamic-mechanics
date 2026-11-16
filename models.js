@@ -8,6 +8,7 @@
   const canvas = document.getElementById('modelsCanvas');
 
   if (!sec || !canvas) return;
+  if (window.matchMedia('(max-width:1000px)').matches) return;   // phones/tablets use the static layout
 
   const ctx = canvas.getContext('2d', { alpha: false });
 
@@ -15,7 +16,7 @@
   const btns = [...document.querySelectorAll('#mRail button')];
 
   const TOTAL_FRAMES = 240;
-  const FRAME_PATH = '/public/showroom-frames/frame-';
+  const FRAME_PATH = 'public/showroom-frames/frame-';
 
   const frames = [];
   let loadedFrames = 0;

@@ -477,8 +477,9 @@ class RevealCanvas {
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
+    if (matchMedia('(max-width:1000px)').matches) return;   // phones/tablets use the static anatomy layout
     window.apexRevealCanvas = new RevealCanvas();
   });
 } else {
-  window.apexRevealCanvas = new RevealCanvas();
+  if (!matchMedia('(max-width:1000px)').matches) window.apexRevealCanvas = new RevealCanvas();
 }

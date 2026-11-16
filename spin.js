@@ -91,12 +91,22 @@
   /* ---- drawing ---- */
   function draw(img) {
     if (!img) return;
-    const cw = cv.width, ch = cv.height, r = Math.max(cw / img.width, ch / img.height);   // cover
+    const cw = cv.width, ch = cv.height;
+    const portrait = cw / ch < 0.85;   // phones: show ~75% of the frame width instead of a tight cover crop
+    const r = portrait ? Math.max(cw / (img.width * 0.75), ch / img.height * 0.3) : Math.max(cw / img.width, ch / img.height);
     const dw = img.width * r, dh = img.height * r, tl = window.apexTilt || { x: 0, y: 0 }, dpr = cv.width / stage.clientWidth;
-    const dx = Math.round((cw - dw) / 2 + tl.x * dpr), dy = Math.round((ch - dh) * 0.25 + tl.y * dpr);
+    const dx = Math.round((cw - dw) / 2 + tl.x * dpr), dy = Math.round((ch - dh) * (portrait ? 0.42 : 0.25) + tl.y * dpr);
     const eng = window.apexColorEngine;
+    if (portrait) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch); }
     if (eng && eng.drawWithWipe) eng.drawWithWipe(ctx, img, dx, dy, dw, dh, true);
     else ctx.drawImage(img, dx, dy, dw, dh);
+    if (portrait) {   // feather the frame's top and bottom edges into the black stage
+      const f = dh * 0.18;
+      let g = ctx.createLinearGradient(0, dy, 0, dy + f); g.addColorStop(0, '#000'); g.addColorStop(1, '#0000');
+      ctx.fillStyle = g; ctx.fillRect(0, dy, cw, f);
+      g = ctx.createLinearGradient(0, dy + dh - f, 0, dy + dh); g.addColorStop(0, '#0000'); g.addColorStop(1, '#000');
+      ctx.fillStyle = g; ctx.fillRect(0, dy + dh - f, cw, f + 1);
+    }
   }
   const progress = () => {
     const rect = sec.getBoundingClientRect();
