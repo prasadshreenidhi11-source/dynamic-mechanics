@@ -68,3 +68,7 @@ Included: hero headline and call to action, working form validation and submit, 
 
 ### Test checklist
 Check at 360, 390, 768, 1024 and 1440 wide, and one phone in landscape. Scroll the hero, Models, Specs, Interactive Anatomy, the enquiry form and the footer. Tab through the page with the keyboard. Submit the form empty, with a bad email, and with valid details.
+
+## Home 2: light version (`home-2.html`)
+
+The same page as `index.html` with a light colour theme (cream background, dark text). The styles live in `light.css`, loaded after `extras.css`. Photo-led sections (hero, models, specs, anatomy) keep a dark look so text stays readable over the images. Open it at `/home-2.html`.
