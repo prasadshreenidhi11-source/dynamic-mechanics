@@ -1,0 +1,81 @@
+/* Home 2: layered on top of styles.css */
+
+/* accessibility */
+.skip{position:fixed;left:12px;top:-60px;z-index:200;background:var(--gold);color:#000;padding:10px 14px;font:700 12px Orbitron,sans-serif;letter-spacing:.12em;text-transform:uppercase;border-radius:4px;transition:top .2s}
+.skip:focus{top:12px}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.paint-title,.ld-note,.rail-list button,.tk,.ast-t small{font-size:max(11px,1em)}
+.paint-title{font-size:11px}
+.ld-note,.ld-quiet{font-size:11px}
+.tcard .tk,.mcard .tk,.mst-copy .tk{font-size:11px}
+
+/* hero intro (visible before any scrolling) */
+.h2-intro{position:absolute;z-index:6;left:clamp(16px,4vw,48px);top:clamp(84px,14vh,130px);max-width:min(560px,86vw);transition:opacity .5s ease,transform .5s ease}
+.h2-intro .eyebrow{margin-bottom:10px}
+.h2-intro h1{font:900 clamp(26px,4.2vw,56px)/1.05 Orbitron,sans-serif;text-transform:uppercase;letter-spacing:.02em;text-shadow:0 2px 18px #000}
+.h2-btn{display:inline-block;margin-top:18px;padding:13px 22px;background:var(--gold);color:#000;font:700 11px Orbitron,sans-serif;letter-spacing:.2em;text-transform:uppercase;border-radius:3px;transition:transform .25s,background .25s}
+.h2-btn:hover{transform:translateY(-2px);background:#ffd633}
+.h2-intro.gone{opacity:0;transform:translateY(-14px);pointer-events:none}
+
+/* model request link */
+.mst-link{display:inline-block;margin-top:12px;font:700 11px Orbitron,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+
+/* form + footer */
+.form-status{min-height:20px;margin:12px 0 0;font:400 13px/1.4 Inter,sans-serif;color:var(--muted)}
+.form-status.ok{color:#7ddc8a}.form-status.err{color:#ff8a80}
+.enquiry input[aria-invalid="true"]{border-color:#ff8a80!important}
+.to-top{display:inline-block;margin-left:14px;color:var(--gold)}
+.legal{line-height:1.6}
+
+/* phones */
+@media (max-width:760px){
+  .h2-intro{top:84px}
+  /* colour picker: a compact strip instead of a column over the car */
+  .paint{left:0;right:0;bottom:176px!important;top:auto!important;flex-direction:row;align-items:center;justify-content:center;gap:10px;padding:0 16px}
+  .paint-title{display:none}
+  .paint-swatches{max-width:none;flex-wrap:nowrap;gap:12px}
+  .paint-name{display:none}
+}
+
+/* Models: swipeable cards on narrow phones; two-column grid from 600px */
+@media (max-width:599px){
+  /* Models: swipeable cards */
+  .mstatic{padding:96px 0 40px}
+  .mst-head{padding:0 16px;margin-bottom:22px}
+  .mst-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:0 16px 8px;scroll-padding:0 16px}
+  .mst-track::-webkit-scrollbar{display:none}
+  .mst{flex:0 0 82%;scroll-snap-align:start;margin-bottom:0}
+}
+
+/* short landscape screens (phones turned sideways) */
+@media (orientation:landscape) and (max-height:520px){
+  .h2-intro{top:70px;max-width:50vw}
+  .h2-intro h1{font-size:clamp(20px,3.4vw,32px)}
+  .h2-btn{margin-top:10px;padding:10px 16px}
+  .paint{bottom:12px}
+  .nav{padding-top:10px;padding-bottom:10px}
+  .mstatic,.astatic{padding-top:72px}
+}
+
+/* reduced motion: no animated intro transitions or smooth jumps */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .h2-intro{transition:none}
+}
+
+/* fixes after first visual pass */
+.cta{white-space:nowrap}
+.h2-intro h1{font-size:clamp(22px,3.4vw,44px)}
+@media (min-width:761px){
+  .h2-intro{left:clamp(110px,10vw,170px);top:clamp(84px,13vh,120px)}
+  .h2-intro h1 br{display:none}
+}
+@media (max-width:760px){
+  .paint-swatches{flex-direction:row!important;flex-wrap:nowrap!important}
+  .paint{flex-direction:row!important}
+  .nav{gap:8px}
+  .cta{padding:10px 12px;font-size:10px;letter-spacing:.12em}
+  .h2-intro h1{font-size:clamp(20px,5.8vw,26px)}
+}
+
+@media (min-width:600px){.mst-track{display:contents}}

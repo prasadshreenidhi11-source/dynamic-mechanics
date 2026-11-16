@@ -13,8 +13,9 @@
   const pad = (i, n) => String(i + 1).padStart(n, '0');
 
   const OPEN_AT = 0.22;                      // scroll progress where the car is fully open and 360 rotation begins
-  const A = makeSet(72, i => `frames_lambo_open/frame-${pad(i, 4)}.webp`, 24);
-  const B = makeSet(240, i => `frames_lambo_360/frame-${pad(i, 4)}.webp`, 30);
+  const SM = matchMedia('(max-width:760px)').matches ? '_sm' : '';   // phones load 640px frames
+  const A = makeSet(72, i => `frames_lambo_open${SM}/frame-${pad(i, 4)}.webp`, 24);
+  const B = makeSet(240, i => `frames_lambo_360${SM}/frame-${pad(i, 4)}.webp`, 30);
   window.FRAME_COUNT = A.N; window.ready = 0;
   let loaded = 0, started = false;
   let pos = 0, vel = 0, dragging = false, lastX = 0, visible = false, target = null, mode = 'scrub';

@@ -50,19 +50,7 @@ class HeroCanvas {
   }
 
   preloadFrames() {
-    return; // frames now come from spin.js (360 view); keep only the scroll text logic here
-    for (let i = 1; i <= this.totalFrames; i++) {
-      const img = new Image();
-      const frameNum = String(i).padStart(4, '0');
-      img.src = `frames_hd3/f_${frameNum}.webp`;
-      
-      img.onload = () => {
-        this.imagesLoaded++;
-        window.ready = this.imagesLoaded;
-      };
-      
-      this.frames.push(img);
-    }
+    // frames come from spin.js (hero) - nothing to preload here
   }
 
   bindScroll() {
