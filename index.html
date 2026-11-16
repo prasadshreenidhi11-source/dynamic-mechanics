@@ -4,12 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Cpath d=%27M20 3 36 12v16L20 37 4 28V12z%27 fill=%27%23000%27 stroke=%27%23f5c400%27 stroke-width=%273%27/%3E%3C/svg%3E">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 
 <title>APEX Hypercars | Unleash the Beast</title>
 
 <meta name="description" content="APEX hypercars: hand-built, limited to 250 a year. Explore the models, the engineering and a 360 view, then request private access.">
 <meta name="theme-color" content="#050505">
+<meta property="og:type" content="website">
+<meta property="og:title" content="APEX Hypercars | Hand-built, limited to 250 a year">
+<meta property="og:description" content="Explore the models, the engineering and a 360 view, then request private access. Concept design.">
+<meta property="og:image" content="public/models-sm/0160.webp">
+<meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,9 +23,11 @@
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500&display=swap"></noscript>
 
 <link rel="stylesheet" href="styles.css?v=12">
+<link rel="stylesheet" href="extras.css?v=3">
 </head>
 
 <body>
+<a class="skip" href="#models">Skip to content</a>
 
 <!-- LOADER -->
 <div class="loader" id="loader" role="status" aria-live="polite">
@@ -85,7 +92,7 @@
       <span class="sound-label" id="soundLabel">Sound on</span>
     </button>
 
-    <a class="cta" href="#contact">Configure</a>
+    <a class="cta" href="#contact">Request access</a>
   </div>
 
 </header>
@@ -97,6 +104,12 @@
   <section class="hero" id="hero">
 
     <div class="stage">
+
+      <div class="h2-intro" id="h2Intro">
+        <p class="eyebrow">APEX Hypercars</p>
+        <h1>Hand-built. <br>Limited to 250 a year.</h1>
+        <a class="h2-btn" href="#contact">Request private access</a>
+      </div>
 
       <canvas id="frames" aria-hidden="true" style="display:none"></canvas>
 
@@ -281,7 +294,7 @@
       <!-- HERO TEXT -->
       <div class="copy c1" id="c1">
         <p class="eyebrow">The 2027 Apex V12</p>
-        <h1>Unleash <br>the beast</h1>
+        <h2>Unleash <br>the beast</h2>
       </div>
 
       <div class="copy c2" id="c2">
@@ -326,7 +339,7 @@
       <a class="cfg" id="cfg" href="#contact">
         <span id="cfgText">Sun Yellow</span>
         <em>from $480,000</em>
-        <b>Configure</b>
+        <b>Request access</b>
       </a>
 
       <div class="meter" aria-hidden="true">
@@ -403,39 +416,44 @@
         <p class="eyebrow">01 / Models</p>
         <h2>Four ways<br>to arrive</h2>
       </div>
+      <div class="mst-track">
       <article class="mst">
-        <img src="public/showroom-frames/frame-0160.webp" alt="Zenith X1" loading="lazy" decoding="async" width="1280" height="720">
+        <img src="public/models-sm/0160.webp" alt="Zenith X1 hypercar in the APEX showroom" loading="lazy" decoding="async" width="800" height="450">
         <div class="mst-copy">
           <b class="tk">The Legend</b>
           <h3>Zenith X1</h3>
           <p>Pure. Refined.</p>
+          <a class="mst-link" data-model="Zenith X1" href="#contact">Request this model &rarr;</a>
           <span class="mst-n">01</span>
         </div>
       </article>
       <article class="mst">
-        <img src="public/showroom-frames/frame-0130.webp" alt="Vectra S" loading="lazy" decoding="async" width="1280" height="720">
+        <img src="public/models-sm/0130.webp" alt="Vectra S hypercar in the APEX showroom" loading="lazy" decoding="async" width="800" height="450">
         <div class="mst-copy">
           <b class="tk">The Evolution</b>
           <h3>Vectra S</h3>
           <p>Speed. Redefined.</p>
+          <a class="mst-link" data-model="Vectra S" href="#contact">Request this model &rarr;</a>
           <span class="mst-n">02</span>
         </div>
       </article>
       <article class="mst">
-        <img src="public/showroom-frames/frame-0100.webp" alt="Orion GT" loading="lazy" decoding="async" width="1280" height="720">
+        <img src="public/models-sm/0100.webp" alt="Orion GT hypercar in the APEX showroom" loading="lazy" decoding="async" width="800" height="450">
         <div class="mst-copy">
           <b class="tk">The Future</b>
           <h3>Orion GT</h3>
           <p>Drive the future. Today.</p>
+          <a class="mst-link" data-model="Orion GT" href="#contact">Request this model &rarr;</a>
           <span class="mst-n">03</span>
         </div>
       </article>
       <article class="mst">
-        <img src="public/showroom-frames/frame-0070.webp" alt="Raven" loading="lazy" decoding="async" width="1280" height="720">
+        <img src="public/models-sm/0070.webp" alt="Raven hypercar in the APEX showroom" loading="lazy" decoding="async" width="800" height="450">
         <div class="mst-copy">
           <b class="tk">Next Gen</b>
           <h3>Raven</h3>
           <p>Power, unleashed.</p>
+          <a class="mst-link" data-model="Raven" href="#contact">Request this model &rarr;</a>
           <span class="mst-n">04</span>
         </div>
       </article>
@@ -451,10 +469,10 @@
 
         <video
           id="specsVideo"
-          src="videos/bugatti.mp4"
+          data-src="videos/bugatti.mp4"
           muted
           playsinline
-          preload="metadata">
+          preload="none">
         </video>
 
         <div class="specs-video-overlay"></div>
@@ -700,7 +718,8 @@
             </div>
 
           </article>
-        </div>
+          </div>
+    </div>
 
       </div>
 
@@ -742,7 +761,7 @@
         <h2>Interactive<br>Anatomy</h2>
         <p class="sub">Complete reveal. Open any component to explore the bespoke engineering.</p>
       </div>
-      <img class="ast-img" src="reveal_frames/f_0220.webp" alt="Pagani Huayra exploded anatomy" loading="lazy" decoding="async">
+      <img class="ast-img" src="public/models-sm/anatomy.webp" alt="Exploded view of a hypercar showing the V12 engine, carbon monocoque tub, suspension, forged wheels and aero diffusers" loading="lazy" decoding="async">
       <div class="ast-list">
         <details class="ast-item" open>
           <summary><span class="ast-n">01</span><span class="ast-t"><small>Powertrain Engineering</small>AMG 6.0L Twin-Turbo V12</span></summary>
@@ -860,7 +879,9 @@
 
         <form
           class="enquiry"
-          onsubmit="event.preventDefault();this.querySelector('button').textContent='Request noted';">
+          id="enquiryForm"
+          novalidate>
+          <input type="hidden" name="model" id="enqModel" value="">
 
           <div class="cta-input">
             <label for="enqName">YOUR NAME</label>
@@ -898,6 +919,7 @@
           </button>
 
         </form>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
 
         <div class="cta-form-footer">
           <span>CONFIDENTIAL ENQUIRY</span>
@@ -931,29 +953,32 @@
 
     <div>
       <h3>Contact</h3>
-      <a href="mailto:hello@example.com">hello@example.com</a>
-      <a href="tel:+000000000">+00 000 000 000</a>
+      <div id="footContact"><p class="muted">Use the private enquiry form above.</p></div>
     </div>
 
   </div>
 
   <p class="legal">
-    &copy; 2026 APEX Hypercars. Concept design, not a real brand.
+    &copy; 2026 APEX Hypercars. Concept design, not a real brand. All car imagery is AI-generated for illustration only; any resemblance to real manufacturers or logos is unintended.
+    <a class="to-top" href="#top">Back to top &uarr;</a>
   </p>
 
 </footer>
 
 <!-- JAVASCRIPT FILES -->
-<script src="app.js?v=2"></script>
+<script>window.APEX_FAST = 24;</script>
+<script src="site-config.js"></script>
+<script src="app.js?v=3"></script>
 <script src="sections.js"></script>
 <script src="audio.js"></script>
-<script src="loader.js"></script>
+<script src="loader.js?v=2"></script>
 <script src="smooth.js"></script>
 <script src="colors.js"></script>
 <script src="tech.js"></script>
-<script src="spin.js?v=4"></script>
+<script src="spin.js?v=5"></script>
 <script src="hero-features.js"></script>
 <script src="models.js?v=4"></script>
 
+<script src="extras.js?v=1"></script>
 </body>
 </html>

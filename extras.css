@@ -1,4 +1,4 @@
-/* Home 2: layered on top of styles.css */
+/* Extras: layered on top of styles.css */
 
 /* accessibility */
 .skip{position:fixed;left:12px;top:-60px;z-index:200;background:var(--gold);color:#000;padding:10px 14px;font:700 12px Orbitron,sans-serif;letter-spacing:.12em;text-transform:uppercase;border-radius:4px;transition:top .2s}
@@ -68,6 +68,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible,s
 .h2-intro h1{font-size:clamp(22px,3.4vw,44px)}
 @media (min-width:761px){
   .h2-intro{left:clamp(110px,10vw,170px);top:clamp(84px,13vh,120px)}
+  .h2-intro{max-width:none}
+  .h2-intro h1{font-size:clamp(20px,2.8vw,40px);white-space:nowrap}
   .h2-intro h1 br{display:none}
 }
 @media (max-width:760px){

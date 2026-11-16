@@ -1,5 +1,14 @@
-/* Home 2 behaviours: config-driven footer, working enquiry form, model request links, intro fade. */
+/* Extras: config-driven footer, working enquiry form, model request links, intro fade, lazy specs video. */
 (() => {
+  /* the 2.7 MB specs video only starts downloading when the section is near */
+  const sv = document.getElementById('specsVideo');
+  if (sv && sv.dataset.src) {
+    const start = () => { sv.src = sv.dataset.src; sv.load(); };
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); start(); } }, { rootMargin: '2000px 0px' });
+      io.observe(sv);
+    } else start();
+  }
   const cfg = window.APEX_CONFIG || {};
 
   /* footer contact: only show real details */

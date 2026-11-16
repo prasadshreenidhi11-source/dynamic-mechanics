@@ -58,13 +58,13 @@ If you change the number of frames, update `FRAME_COUNT` at the top of `app.js`.
 - **Enquiry form** does not send anywhere yet.
 - **Phone layout** has not been tested.
 
-## Home 2 (`home-2.html`)
+## Improvements now on the main page
 
-An improved version of the page that sits next to `index.html`. Open it at `/home-2.html`.
+The former "Home 2" is merged into `index.html`. Its extra styles live in `extras.css` and its behaviour in `extras.js`.
 
 Set real details in `site-config.js` (form endpoint, email, phone). Until `formEndpoint` is set, the enquiry form runs in demo mode and sends nothing.
 
-Home 2 adds: hero headline and call to action, working form validation and submit, "Request access" labels, swipeable model cards on phones, a compact colour strip on phones, landscape-phone rules, keyboard focus styles and a skip link, Open Graph tags, a favicon file, 640px frame sets for phones, and a disclaimer about the AI-generated car imagery.
+Included: hero headline and call to action, working form validation and submit, "Request access" labels, swipeable model cards on phones, a compact colour strip on phones, landscape-phone rules, keyboard focus styles and a skip link, Open Graph tags, a favicon file, 640px frame sets for phones, a fast loader (24-frame gate, time-based easing, lazy specs video), and a disclaimer about the AI-generated car imagery.
 
 ### Test checklist
 Check at 360, 390, 768, 1024 and 1440 wide, and one phone in landscape. Scroll the hero, Models, Specs, Interactive Anatomy, the enquiry form and the footer. Tab through the page with the keyboard. Submit the form empty, with a bad email, and with valid details.

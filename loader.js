@@ -55,10 +55,13 @@
   const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
   let fontsOk = false; fontsReady.then(() => { fontsOk = true; });
 
+  let lastT = performance.now();
+  const MIN_MS = window.APEX_FAST ? 700 : 1400;   // shortest time the loader stays up
   (function tick() {
-    const minTime = Math.min(1, (performance.now() - t0) / 1400);
+    const now = performance.now(), dt = Math.min(250, now - lastT); lastT = now;
+    const minTime = Math.min(1, (now - t0) / MIN_MS);
     const target = Math.min(real(), 0.3 + minTime * 0.7);
-    shown += (target - shown) * 0.08;
+    shown += (target - shown) * (1 - Math.exp(-dt / 120));   // time-based easing: same speed at 17fps or 120fps
     if (target - shown < 0.002) shown = target;
     const p = Math.round(shown * 100);
     

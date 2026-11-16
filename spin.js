@@ -16,7 +16,8 @@
   const SM = matchMedia('(max-width:760px)').matches ? '_sm' : '';   // phones load 640px frames
   const A = makeSet(72, i => `frames_lambo_open${SM}/frame-${pad(i, 4)}.webp`, 24);
   const B = makeSet(240, i => `frames_lambo_360${SM}/frame-${pad(i, 4)}.webp`, 30);
-  window.FRAME_COUNT = A.N; window.ready = 0;
+  const NEED = Math.min(A.N, window.APEX_FAST || A.N);   // frames required before the loader finishes (the rest keep loading)
+  window.FRAME_COUNT = NEED; window.ready = 0;
   let loaded = 0, started = false;
   let pos = 0, vel = 0, dragging = false, lastX = 0, visible = false, target = null, mode = 'scrub';
 
@@ -63,7 +64,7 @@
         if (next >= jobs.length) break;
         const [s, i] = jobs[next++];
         try { s.blobs[i] = await (await fetch(s.url(i))).blob(); } catch (e) {}
-        loaded++; window.ready = Math.min(loaded, A.N); bar.style.width = (loaded / jobs.length * 100) + '%';
+        loaded++; window.ready = Math.min(loaded, NEED); bar.style.width = (loaded / jobs.length * 100) + '%';
         if (loaded === jobs.length) loadEl.classList.add('done');
       }
     };
