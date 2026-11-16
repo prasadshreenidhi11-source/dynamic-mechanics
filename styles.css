@@ -1953,3 +1953,34 @@ html, body { overflow-x: clip; }
   background: linear-gradient(90deg, transparent 0%, rgba(245,196,0,.15) 15%, var(--gold) 50%, rgba(245,196,0,.15) 85%, transparent 100%);
   box-shadow: 0 0 18px rgba(245,196,0,.4);
 }
+/* --- Responsive pass: small-screen safeguards --- */
+html,body{max-width:100%;overflow-x:clip}
+img,video,canvas,svg{max-width:100%}
+@media (max-width:900px){.techlayer{display:none}}
+@media (max-width:600px){
+  .loader{padding:0 20px;gap:14px}
+  .ld-actions{flex-direction:column;gap:8px;width:100%;max-width:300px}
+  .ld-enter{width:100%;padding:14px 16px;text-align:center}
+  .ld-quiet{padding:10px 8px}
+  .ld-note{letter-spacing:.25em;text-align:center}
+}
+@media (max-width:400px){.ld-logo{letter-spacing:.35em}}
+@media (max-width:760px){
+  /* models showroom: card above, horizontal rail along the bottom */
+  #models .mcards{left:16px;right:16px;width:auto;top:auto;bottom:196px;height:110px}
+  #models .mrail{right:auto;left:50%;top:auto;bottom:140px;transform:translateX(-50%);flex-direction:row}
+  #models .mrail button{width:40px;height:40px}
+  .mcard{padding:12px 16px 14px}
+  .mcard h3{font-size:16px}
+  .mcard p{font-size:12px}
+}
+@media (max-width:760px){
+  .rail{display:none}
+  .reveal-copy{text-shadow:0 2px 14px #000,0 0 28px #000b}
+  .reveal-copy .sub{color:#e8e8ec;text-shadow:0 1px 10px #000,0 0 20px #000}
+}
+@media (min-width:761px) and (max-width:1000px){
+  .nav{gap:16px}
+  .nav .links{gap:18px}
+  .nav .sound span:not(:first-child),.nav .sound .lbl{display:none}
+}
