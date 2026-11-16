@@ -1984,3 +1984,15 @@ img,video,canvas,svg{max-width:100%}
   .nav .links{gap:18px}
   .nav .sound span:not(:first-child),.nav .sound .lbl{display:none}
 }
+@media (max-width:760px){
+  .foot-grid{gap:28px 20px}
+  .foot a,.foot p{overflow-wrap:anywhere}
+}
+@media (max-width:420px){
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .foot-grid>:first-child{grid-column:1/-1}
+  .foot a{font-size:14px}
+}
+@media (max-width:1000px){
+  .reveal-copy{max-width:min(420px,88vw);top:12vh;padding:12px 14px;border-radius:12px;background:linear-gradient(135deg,#050505cc,#05050580);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+}
