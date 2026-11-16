@@ -1,69 +1,193 @@
-/* Models: one wide frame with all four cars. Scrolling moves the camera from the full row to each car in turn,
-   and that car's label arrives when the camera does. The picture is untouched (no filters, no overlays, no canvas). */
+
+/* Models: 240 WebP frames controlled by scroll progress.
+   Scroll down = video plays forward.
+   Scroll up = video plays backward.
+*/
 (() => {
   const sec = document.getElementById('models');
-  const box = document.getElementById('mBox');
-  if (!sec || !box) return;
+  const canvas = document.getElementById('modelsCanvas');
+
+  if (!sec || !canvas) return;
+
+  const ctx = canvas.getContext('2d', { alpha: false });
+
   const cards = [...document.querySelectorAll('#mCards .mcard')];
   const btns = [...document.querySelectorAll('#mRail button')];
 
-  // camera stops: centre of the shot (fractions of the picture) and zoom. Stop 0 is the whole row, 1-4 are the cars.
-  const STOPS = [
-    { cx: 0.50, cy: 0.435, k: 1.05 },   // all four cars
-    { cx: 0.20, cy: 0.60,  k: 2.4 },    // 01 red
-    { cx: 0.40, cy: 0.60,  k: 2.4 },    // 02 orange
-    { cx: 0.62, cy: 0.60,  k: 2.4 },    // 03 blue
-    { cx: 0.86, cy: 0.60,  k: 2.4 },    // 04 black
-  ];
-  const N = STOPS.length;                       // 5 stops across the section
-  const smooth = t => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
-  const progress = () => {
-    const r = sec.getBoundingClientRect();
-    return Math.min(1, Math.max(0, -r.top / Math.max(1, sec.offsetHeight - innerHeight)));
-  };
+  const TOTAL_FRAMES = 240;
+  const FRAME_PATH = '/public/showroom-frames/frame-';
 
-  // scroll progress -> camera position (0 = whole row, 1..4 = car). Each stop holds for a while, then glides on.
-  function camPos(p) {
-    const s = p * N;
-    let pos = 0;
-    for (let k = 0; k < N - 1; k++) pos += smooth((s - (k + 0.7)) / 0.6);
-    return pos;
-  }
+  const frames = [];
+  let loadedFrames = 0;
+  let currentFrame = -1;
+  let activeCard = -1;
+  let animationFrame = null;
 
-  let W = 0, H = 0, active = -1;
-  function size() {
-    const vw = innerWidth, vh = innerHeight;
-    W = Math.max(vw, vh * 16 / 9); H = Math.max(vh, vw * 9 / 16);
-    box.style.width = W + 'px'; box.style.height = H + 'px';
-  }
-  function apply() {
-    const pos = camPos(progress());
-    const i = Math.min(N - 2, Math.floor(pos)), f = pos - i;
-    const a = STOPS[i], b = STOPS[i + 1];
-    const lerp = (x, y) => x + (y - x) * f;
-    const k = lerp(a.k, b.k), cx = lerp(a.cx, b.cx), cy = lerp(a.cy, b.cy);
-    const fw = innerWidth / (k * W), fh = innerHeight / (k * H);
-    const u0 = Math.min(1 - fw, Math.max(0, cx - fw / 2)), v0 = Math.min(1 - fh, Math.max(0, cy - fh / 2));
-    box.style.transform = `translate3d(${-k * u0 * W}px, ${-k * v0 * H}px, 0) scale(${k})`;
+  // Load all 240 frames
+  function preloadFrames() {
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      const img = new Image();
 
-    // the label belongs to the car the camera has arrived at
-    const near = Math.round(pos), arrived = Math.abs(pos - near) < 0.06 && near >= 1 ? near - 1 : -1;
-    if (arrived !== active) {
-      active = arrived;
-      cards.forEach((c, n) => c.classList.toggle('on', n === arrived));
-      btns.forEach((b, n) => b.classList.toggle('on', n === arrived));
+      img.src = `${FRAME_PATH}${String(i).padStart(4, '0')}.webp`;
+
+      img.onload = () => {
+        loadedFrames++;
+
+        if (i === 1) {
+          drawFrame(0);
+        }
+
+        if (loadedFrames === TOTAL_FRAMES) {
+          update();
+        }
+      };
+
+      img.onerror = () => {
+        console.error(`Could not load showroom frame ${i}`);
+      };
+
+      frames[i - 1] = img;
     }
   }
 
-  addEventListener('scroll', apply, { passive: true });
-  addEventListener('resize', () => { size(); apply(); });
+  // Resize canvas according to screen dimensions
+  function resizeCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  btns.forEach(b => b.addEventListener('click', () => {
-    const i = +b.dataset.i;                       // 0..3 -> car stop 1..4, held at the middle of its plateau
-    const p = (i + 1.5) / N;
-    scrollTo({ top: sec.offsetTop + p * (sec.offsetHeight - innerHeight), behavior: 'smooth' });
-  }));
+    const rect = canvas.getBoundingClientRect();
 
-  box.style.transformOrigin = '0 0';
-  size(); apply();
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    drawFrame(currentFrame < 0 ? 0 : currentFrame);
+  }
+
+  // Draw a frame while preserving its aspect ratio
+  function drawFrame(index) {
+    if (!frames.length) return;
+
+    index = Math.max(0, Math.min(TOTAL_FRAMES - 1, index));
+
+    const img = frames[index];
+
+    if (!img || !img.complete || !img.naturalWidth) return;
+
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+
+    if (!width || !height) return;
+
+    const scale = Math.max(
+      width / img.naturalWidth,
+      height / img.naturalHeight
+    );
+
+    const drawWidth = img.naturalWidth * scale;
+    const drawHeight = img.naturalHeight * scale;
+
+    const x = (width - drawWidth) / 2;
+    const y = (height - drawHeight) / 2;
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(img, x, y, drawWidth, drawHeight);
+  }
+
+  // Calculate section scroll progress
+  function getProgress() {
+    const rect = sec.getBoundingClientRect();
+
+    const scrollDistance = Math.max(
+      1,
+      sec.offsetHeight - window.innerHeight
+    );
+
+    return Math.max(
+      0,
+      Math.min(1, -rect.top / scrollDistance)
+    );
+  }
+
+  // Update active model card and navigation
+  function updateActiveCard(progress) {
+    const index = Math.min(
+      3,
+      Math.floor(progress * 4)
+    );
+
+    if (index === activeCard) return;
+
+    activeCard = index;
+
+    cards.forEach((card, i) => {
+      card.classList.toggle('on', i === index);
+    });
+
+    btns.forEach((button, i) => {
+      button.classList.toggle('on', i === index);
+    });
+  }
+
+  // Update frame according to scroll position
+  function update() {
+    animationFrame = null;
+
+    const progress = getProgress();
+
+    const frameIndex = Math.round(
+      progress * (TOTAL_FRAMES - 1)
+    );
+
+    if (frameIndex !== currentFrame) {
+      currentFrame = frameIndex;
+      drawFrame(currentFrame);
+    }
+
+    updateActiveCard(progress);
+  }
+
+  // Keep scroll rendering smooth
+  function requestUpdate() {
+    if (animationFrame !== null) return;
+
+    animationFrame = requestAnimationFrame(update);
+  }
+
+  // Right-side navigation buttons
+  btns.forEach(button => {
+    button.addEventListener('click', () => {
+      const index = Number(button.dataset.i);
+
+      const progress = (index + 0.5) / 4;
+
+      const scrollDistance = Math.max(
+        0,
+        sec.offsetHeight - window.innerHeight
+      );
+
+      const target =
+        window.scrollY +
+        sec.getBoundingClientRect().top +
+        progress * scrollDistance;
+
+      window.scrollTo({
+        top: target,
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  window.addEventListener('scroll', requestUpdate, {
+    passive: true
+  });
+
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+    requestUpdate();
+  });
+
+  resizeCanvas();
+  preloadFrames();
+  requestUpdate();
 })();
