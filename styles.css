@@ -2044,3 +2044,8 @@ img,video,canvas,svg{max-width:100%}
   .mst{margin-bottom:0}
   .astatic{padding-left:32px;padding-right:32px}
 }
+
+/* contrast fixes */
+.loader.ready .ld-bar,.loader.ready .ld-note{opacity:.75}
+.ld-note{color:#b3afa4}
+.legal{color:#9a968c}

@@ -189,6 +189,10 @@
   });
 
   resizeCanvas();
-  preloadFrames();
   requestUpdate();
+  // load the 240 showroom frames only when the section is about to come into view
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); preloadFrames(); } }, { rootMargin: '1500px 0px' });
+    io.observe(sec);
+  } else preloadFrames();
 })();

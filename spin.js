@@ -44,6 +44,12 @@
     };
   }
 
+  const entered = () => new Promise(res => {
+    const root = document.documentElement;
+    if (root.classList.contains('entered')) return res();
+    const mo = new MutationObserver(() => { if (root.classList.contains('entered')) { mo.disconnect(); res(); } });
+    mo.observe(root, { attributes: true, attributeFilter: ['class'] });
+  });
   function load() {
     if (started) return; started = true;
     const jobs = [];
@@ -52,6 +58,8 @@
     let next = 0;
     const worker = async () => {
       while (next < jobs.length) {
+        if (next >= A.N) await entered();   // 360 frames wait until the visitor has entered the site
+        if (next >= jobs.length) break;
         const [s, i] = jobs[next++];
         try { s.blobs[i] = await (await fetch(s.url(i))).blob(); } catch (e) {}
         loaded++; window.ready = Math.min(loaded, A.N); bar.style.width = (loaded / jobs.length * 100) + '%';
